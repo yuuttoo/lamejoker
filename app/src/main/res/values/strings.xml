@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">冷笑話大師</string>
+    <string name="action_go">Go</string>
+    <string name="baking_title">Baking with Gemini</string>
+    <string name="label_prompt">Prompt</string>
+    <string name="prompt_placeholder">Provide a recipe for the baked goods in the image</string>
+    <string name="image1_description">Cupcake</string>
+    <string name="image2_description">Cookies</string>
+    <string name="image3_description">Cake</string>
+    <string name="results_placeholder">(Results will appear here)</string>
+    <string name="welcome_message">點擊「換一個笑話」開始吧！</string>
+    <string name="not_funny_button">不好笑</string>
+    <string name="new_joke_button">換一個笑話</string>
+</resources>

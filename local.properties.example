@@ -1,0 +1,9 @@
+## This file is an example of local.properties
+# Copy this file to local.properties and add your actual API key
+# Do NOT commit local.properties to version control!
+
+# Location of the SDK
+sdk.dir=/path/to/your/android/sdk
+
+# Your API key for the service
+apiKey=YOUR_API_KEY_HERE 
