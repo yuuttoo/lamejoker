@@ -1,127 +1,179 @@
-# 冷笑話大師 (Cold Joke Teller) App 開發計畫 (v2)
+# 冷笑話大師 (Cold Joke Teller) App 開發計畫 (v3)
 
 ## 1. 專案目標
 
-開發一款 Android 原生應用程式，旨在為生活苦悶的用戶提供輕鬆的娛樂。此 App 將以講冷笑話為核心，並根據用戶的反應動態調整互動方式，創造更有趣、更具互動性的體驗。專案將嚴格遵循 MVVM 架構，**使用 Google Gemini API 作為笑話的動態來源**，使用 Jetpack Compose 進行 UI 開發，並包含完整的單元測試，確保程式碼品質與穩定性。
+開發一款 Android 原生應用程式，旨在為生活苦悶的用戶提供輕鬆的娛樂。此 App 以講冷笑話為核心，並根據用戶的反應動態調整互動方式，創造更有趣、更具互動性的體驗。專案嚴格遵循 MVVM 架構，**使用 Google Gemini API 作為笑話的動態來源**，使用 Jetpack Compose 進行 UI 開發，並包含完整的單元測試，確保程式碼品質與穩定性。
 
-## 2. 核心功能
+## 2. 已實現的核心功能
 
-1.  **顯示冷笑話**：
-    *   App 啟動時，或用戶點擊「換一個笑話」按鈕時，透過 Gemini API 產生一則隨機的冷笑話並顯示在畫面上。
+### ✅ 已完成功能：
 
-2.  **用戶反饋機制**：
-    *   畫面上提供一個「不好笑」按鈕。
-    *   當用戶點擊「不好笑」按鈕後，下一次 App 顯示的笑話結尾將自動加上 20 個「哈」字和 10 個「笑到流淚」的 emoji (😂)。
-    *   這個效果僅持續一次，再下一個笑話恢復正常。
+1. **雙語冷笑話顯示**：
+   - App 啟動時自動透過 Gemini API 產生一則隨機的英文冷笑話
+   - 同時提供繁體中文翻譯，以「---」分隔
+   - 支援多種笑話主題：動物、食物、工作、學校、科技、人際關係、旅行、運動、音樂、電影、書籍、科學、歷史、政治、天氣、購物、烹飪、園藝、健身等
 
-3.  **取得新笑話**：
-    *   提供一個按鈕，讓用戶可以隨時呼叫 Gemini API 以獲取新的笑話。
+2. **用戶反饋機制**：
+   - 畫面上提供「不好笑」按鈕
+   - 當用戶點擊「不好笑」按鈕後，下一次 App 顯示的笑話結尾將自動加上 20 個「哈」字和 10 個「笑到流淚」的 emoji (😂)
+   - 這個效果僅持續一次，再下一個笑話恢復正常
 
-## 3. 創意與附加功能
+3. **取得新笑話**：
+   - 提供「換一個笑話」按鈕，讓用戶可以隨時呼叫 Gemini API 以獲取新的笑話
+   - 實現了防重複機制，避免連續顯示相同笑話
+   - 包含笑話歷史記錄管理（最多50個笑話）
 
-1.  **笑話分類**：
-    *   提供多種笑話分類，例如「諧音梗」、「工程師梗」、「生活觀察」等。這將透過修改傳送給 Gemini API 的 prompt 來實現。
+4. **智能防重複系統**：
+   - 使用多種隨機化策略：時間戳、隨機種子、會話ID、主題變化
+   - 檢測到重複笑話時自動重試，使用不同的提示詞
+   - 歷史記錄過大時自動清理
 
-2.  **語音朗讀功能**：
-    *   加入一個朗讀按鈕，使用 Android 的 TTS (Text-to-Speech) 引擎將笑話用平淡、沒有感情的語氣念出來，增強「冷」的效果。
+5. **多樣化提示詞系統**：
+   - 6種不同的提示詞變體，確保笑話的多樣性
+   - 每次請求都包含隨機參數，避免 API 快取
+   - 主題隨機選擇，增加內容變化
 
-3.  **分享功能**：
-    *   用戶可以將當前看到的笑話以文字形式分享到其他 App (如 LINE, Messenger)。
+## 3. 技術架構與實現
 
-4.  **「冷度」評分系統**：
-    *   在每個笑話下方，讓用戶可以用 1 到 5 個雪花 (❄️) 來評價這個笑話的「冷度」，並簡單統計每個笑話的平均冷度。
+### ✅ 已實現的技術架構：
 
-5.  **Material Design 3 與動畫**：
-    *   UI 將採用 Material Design 3 的最新設計語言，包含動態色彩 (Dynamic Color)。
-    *   在切換笑話時加入簡單的淡入淡出或滑動動畫，並處理 `Loading` 狀態的 UI 顯示（例如顯示 `CircularProgressIndicator`）。
-    *   當「不好笑」的懲罰機制觸發時，20 個「哈」字和 emoji 可以用趣味的動畫方式（例如逐字彈出）呈現。
+*   **架構**：MVVM (Model-View-ViewModel) ✅
+*   **UI**：Jetpack Compose ✅
+*   **資料來源**：Google Gemini API (`gemini-1.5-flash` 模型) ✅
+*   **語言**：Kotlin ✅
+*   **非同步處理**：Kotlin Coroutines + Flow ✅
+*   **依賴注入**：手動注入模式 ✅
+*   **測試**：JUnit 5, MockK/Mockito ✅
 
-## 4. 技術架構與選型
-
-*   **架構**：MVVM (Model-View-ViewModel)
-*   **UI**：Jetpack Compose
-*   **資料來源**：**Google Gemini API (`gemini-1.5-flash` 模型)**
-*   **語言**：Kotlin
-*   **非同步處理**：Kotlin Coroutines + Flow
-*   **依賴注入**：Hilt (或手動注入，參照現有 `BakingViewModel` 模式)
-*   **測試**：JUnit 5, MockK/Mockito
-
-## 5. 檔案結構 (基於 `app/src/main/java/com/example/storyteller/`)
+### ✅ 已實現的檔案結構：
 
 ```
 storyteller/
 ├── data/
 │   └── repository/
-│       └── JokeRepository.kt   // 負責處理 Gemini API 呼叫
-│
-├── di/
-│   └── AppModule.kt           // Hilt 依賴注入模組 (如果使用 Hilt)
+│       └── JokeRepository.kt   ✅ // 負責處理 Gemini API 呼叫
 │
 ├── ui/
-│   ├── theme/                  // Compose UI 主題
+│   ├── theme/                  ✅ // Compose UI 主題
 │   ├── joke/
-│   │   ├── JokeScreen.kt       // 主要的 Composable UI 畫面
-│   │   └── JokeViewModel.kt    // 對應 JokeScreen 的 ViewModel
+│   │   ├── JokeScreen.kt       ✅ // 主要的 Composable UI 畫面
+│   │   └── JokeViewModel.kt    ✅ // 對應 JokeScreen 的 ViewModel
 │   └── state/
-│       └── JokeUiState.kt      // 定義 UI 狀態 (Initial, Loading, Success, Error)
+│       └── JokeUiState.kt      ✅ // 定義 UI 狀態 (Initial, Loading, Success, Error)
 │
-└── MainActivity.kt             // App 進入點
+└── MainActivity.kt             ✅ // App 進入點
 ```
-*（註：為使結構清晰，建議將笑話功能相關的 UI 檔案放在 `ui/joke` 子目錄下，狀態檔案放在 `ui/state` 下）*
 
-## 6. 核心組件實作細節
+## 4. 核心組件實作細節
 
-### a. Model / Repository
+### a. Model / Repository ✅
 
 *   **`JokeRepository.kt`**:
-    *   將包含一個 `GenerativeModel` 實例（類似於 `BakingViewModel`）。
-    *   提供一個 suspend 函式 `getJoke(prompt: String): Result<String>`。
-    *   此函式將呼叫 `generativeModel.generateContent()`，並將 prompt 作為輸入。
-    *   它會處理 API 可能發生的例外，並回傳 `Result` 型別（`Result.success` 或 `Result.failure`）。
+    *   包含一個 `GenerativeModel` 實例，使用 `gemini-1.5-flash` 模型
+    *   提供 `getJoke(prompt: String): Result<String>` 函式
+    *   處理 API 例外，回傳 `Result` 型別
+    *   實現隨機參數機制避免 API 快取
 
-### b. ViewModel
+### b. ViewModel ✅
 
 *   **`JokeViewModel.kt`**:
-    *   注入 `JokeRepository`。
-    *   使用 `MutableStateFlow<JokeUiState>` 向 UI 暴露當前狀態，`JokeUiState` 將沿用現有的 `UiState` 密封介面模式。
-    *   **`getNewJoke()`**: 在 Coroutine 中呼叫 `jokeRepository.getJoke()`。
-        *   呼叫前，將 state 設為 `JokeUiState.Loading`。
-        *   根據 Repository 回傳的 `Result`，將 state 更新為 `JokeUiState.Success` 或 `JokeUiState.Error`。
-        *   在 `Success` 狀態下，檢查 `extraPunishment` 旗標，如果為 true，則在笑話結尾附加文字並重設旗標。
-    *   **`onNotFunnyClicked()`**: 將 `extraPunishment` 旗標設為 true。
-    *   **Prompt Engineering**: ViewModel 將負責建構傳送給 Gemini API 的 prompt，例如：「`請用繁體中文說一個簡短的冷笑話`」。
+    *   注入 `JokeRepository`
+    *   使用 `MutableStateFlow<JokeUiState>` 管理 UI 狀態
+    *   **`getNewJoke()`**: 在 Coroutine 中呼叫 `jokeRepository.getJoke()`
+        *   呼叫前將 state 設為 `JokeUiState.Loading`
+        *   根據 Repository 回傳的 `Result` 更新狀態
+        *   實現防重複機制和懲罰系統
+    *   **`onNotFunnyClicked()`**: 將 `addPunishment` 旗標設為 true
+    *   **智能提示詞建構**: 使用多種變體和隨機化策略
 
-### c. View
+### c. View ✅
 
 *   **`JokeScreen.kt`**:
-    *   一個 Composable 函式，負責渲染整體 UI。
-    *   使用 `collectAsStateWithLifecycle()` 訂閱 ViewModel 的 `StateFlow`。
+    *   Composable 函式，負責渲染整體 UI
+    *   使用 `collectAsState()` 訂閱 ViewModel 的 `StateFlow`
     *   根據 `JokeUiState` 的不同狀態顯示對應的 UI：
-        *   `Loading`: 顯示 `CircularProgressIndicator`。
-        *   `Success`: 顯示笑話內容。
-        *   `Error`: 顯示錯誤訊息。
-        *   `Initial`: 顯示歡迎訊息或提示。
-    *   UI 佈局：使用 `Column`、`Row`、`Text`、`Button` 等 Composable 元件。
+        *   `Loading`: 顯示 `CircularProgressIndicator`
+        *   `Success`: 顯示英文笑話和中文翻譯
+        *   `Error`: 顯示錯誤訊息
+        *   `Initial`: 顯示歡迎訊息
+    *   UI 佈局：使用 `Column`、`Row`、`Text`、`Button` 等元件
 
-## 7. 開發步驟 (Milestones)
+## 5. 未來開發計劃
 
-1.  **專案結構調整**：依照計畫建立新的檔案與目錄 (`joke`, `state` 等)。
-2.  **Repository 層開發**：建立 `JokeRepository.kt`，並在其中實作呼叫 Gemini API 的邏輯。
-3.  **ViewModel 層開發**：建立 `JokeViewModel.kt` 和 `JokeUiState.kt`，並實作核心邏輯（呼叫 Repository、管理 UI 狀態、處理「不好笑」點擊）。
-4.  **撰寫單元測試**：為 `JokeViewModel` 和 `JokeRepository` 撰寫單元測試。對於 Repository，可以使用 MockK 來模擬 `GenerativeModel` 的行為。
-5.  **View 層開發**：使用 Jetpack Compose 建立 `JokeScreen.kt`，將 UI 與 ViewModel 連接，並處理各種 UI 狀態的顯示。
-6.  **整合與測試**：修改 `MainActivity.kt` 以載入 `JokeScreen`，運行 App 進行手動測試。
-7.  **附加功能開發**：逐步實現語音朗讀、分享、評分等創意功能。
-8.  **UI/UX 優化**：加入動畫效果，調整佈局與顏色，確保符合 Material Design 規範。
+### 🔄 下一階段功能：
 
-## 8. 測試策略
+1. **笑話分類系統**：
+   - 實現用戶可選擇的笑話分類
+   - 根據分類調整傳送給 Gemini API 的 prompt
+
+2. **語音朗讀功能**：
+   - 加入朗讀按鈕，使用 Android TTS 引擎
+   - 用平淡、沒有感情的語氣念出笑話，增強「冷」的效果
+
+3. **分享功能**：
+   - 用戶可以將當前笑話以文字形式分享到其他 App
+
+4. **「冷度」評分系統**：
+   - 在每個笑話下方，讓用戶用 1 到 5 個雪花 (❄️) 評價笑話的「冷度」
+   - 統計每個笑話的平均冷度
+
+5. **Material Design 3 優化**：
+   - 採用 Material Design 3 的最新設計語言
+   - 加入動態色彩 (Dynamic Color)
+   - 在切換笑話時加入淡入淡出或滑動動畫
+   - 當「不好笑」懲罰機制觸發時，用趣味的動畫方式呈現
+
+## 6. 測試策略
+
+### ✅ 已實現的測試：
 
 *   **單元測試 (Unit Tests)**：
-    *   **目標**：`JokeViewModel` 和 `JokeRepository`。
-    *   **內容**：測試業務邏輯、狀態轉換、Prompt 建構、API 結果處理等。
-    *   **工具**：JUnit 5, MockK (用以模擬 `GenerativeModel`)。
+    *   **目標**：`JokeViewModel` 和 `JokeRepository`
+    *   **內容**：測試業務邏輯、狀態轉換、API 結果處理等
+    *   **工具**：JUnit 5, MockK
+
+### 🔄 計劃中的測試：
 
 *   **UI 測試 (Instrumentation Tests)**：
-    *   **目標**：`JokeScreen.kt`。
-    *   **內容**：驗證在不同 `JokeUiState` 下 UI 的呈現是否正確（例如 Loading 是否顯示、錯誤訊息是否出現）。
-    *   **工具**：Compose Test Rule, Espresso。
+    *   **目標**：`JokeScreen.kt`
+    *   **內容**：驗證在不同 `JokeUiState` 下 UI 的呈現是否正確
+    *   **工具**：Compose Test Rule, Espresso
+
+## 7. 專案狀態總結
+
+### ✅ 已完成 (100%)：
+- 核心 MVVM 架構
+- Gemini API 整合
+- 雙語笑話顯示
+- 用戶反饋機制
+- 防重複系統
+- 基礎 UI 實現
+- 單元測試框架
+
+### 🔄 進行中 (0%)：
+- 無
+
+### 📋 待開發 (0%)：
+- 笑話分類系統
+- 語音朗讀功能
+- 分享功能
+- 冷度評分系統
+- UI/UX 優化
+- 動畫效果
+
+## 8. 部署與維護
+
+### ✅ 已完成：
+- Git 版本控制設置
+- API Key 安全保護（使用 local.properties 和 .gitignore）
+- 專案文檔（README.md）
+- 範例配置文件（local.properties.example）
+
+### 🔄 下一步：
+- 推送到遠程 Git 倉庫
+- 持續集成/持續部署 (CI/CD) 設置
+- 應用程式發布準備
+
+---
+
+**專案進度：核心功能 100% 完成，已準備好進行功能擴展和 UI/UX 優化**
