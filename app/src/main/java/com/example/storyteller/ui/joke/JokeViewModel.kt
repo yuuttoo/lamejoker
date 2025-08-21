@@ -125,13 +125,4 @@ class JokeViewModel(private val jokeRepository: JokeRepository = JokeRepository(
         Log.d("JokeViewModel", "onNotFunnyClicked called")
         addPunishment = true
     }
-    
-    // Add method to manually clear joke history
-    fun clearJokeHistory() {
-        jokeHistory.clear()
-        Log.d("JokeViewModel", "Joke history cleared")
-    }
-    
-    // Add method to get current history size for debugging
-    fun getJokeHistorySize(): Int = jokeHistory.size
 }
